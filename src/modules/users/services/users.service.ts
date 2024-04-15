@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
@@ -23,7 +23,7 @@ export class UsersService {
   async findAll(pagination: PaginationDto) {
     const { limit = 10, offset = 0 } = pagination;
     const users = await this.userRepository.find({
-      where: { deletedAt: null },
+      where: { deletedAt: IsNull() },
       take: limit,
       skip: offset,
     });
@@ -34,7 +34,7 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto, userId: string) {
     if (userId != id) {
       throw new ForbiddenException(
-        'You are not allowed to remove another user',
+        'You are not allowed to update another user',
       );
     }
     await this.findOne(id);
