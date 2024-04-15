@@ -1,15 +1,16 @@
 version: '3.5'
 services:
-  migration:
+  server:
     build: .
     depends_on:
       - db
-    #   - back
     command: >
       bash -c "./wait-for-it/wait-for-it.sh db:5432 -- npm run migration:run
       && npm run start:prod"
     environment:
       DB_HOST: postgres
+    ports:
+      - '3000:3000'
   db:
     image: postgres:14.3
     restart: always
